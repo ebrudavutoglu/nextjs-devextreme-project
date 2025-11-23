@@ -16,6 +16,7 @@ export default function Sidebar() {
 
   const menuItems: AppMenuItem[] = [
     { text: "Kullanıcılar", icon: "user", path: "/users" },
+    { text: "Siparişler", icon: "cart", path: "/orders" },
     {
       text: "Çıkış Yap",
       icon: "close",

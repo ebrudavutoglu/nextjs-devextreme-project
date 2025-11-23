@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "./actions/main";
 
 const authRoutes = ["/auth", "/login", "/register"];
-const protectedRoutes = ["/users"];
+const protectedRoutes = ["/users", "/orders"];
 const publicRoutes = ["/about"];
 
 export async function middleware(request: NextRequest) {
