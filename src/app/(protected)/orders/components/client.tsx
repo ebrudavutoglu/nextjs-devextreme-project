@@ -9,7 +9,9 @@ import {
   Paging,
 } from "devextreme-react/data-grid";
 import { Form, Item } from "devextreme-react/form";
-import notify from "devextreme/ui/notify";
+import { CellClickEvent } from "devextreme/ui/data_grid";
+import Popup from "devextreme-react/popup";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const OrdersClient = () => {
@@ -129,6 +131,7 @@ const OrdersClient = () => {
         <Column dataField="id" caption="#" width={80} />
         <Column dataField="userId" caption="İsim" />
         <Column dataField="date" caption="Tarih" dataType="date" />
+
         <MasterDetail enabled={true} render={OrderDetail} />
       </DataGrid>
     </div>
@@ -137,6 +140,16 @@ const OrdersClient = () => {
 
 const OrderDetail = ({ data }: { data: { products: IProduct[] } }) => {
   const products = data?.products;
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<IProduct | null>(null);
+
+  const handleCellClick = (e: CellClickEvent) => {
+    if (e.column.dataField === "avatar") {
+      // sadece avatar column tıklandığında
+      setSelectedOrder(e.data);
+      setPopupVisible(true);
+    }
+  };
 
   return (
     <div className="p-4 bg-gray-50 rounded-md">
@@ -147,6 +160,7 @@ const OrderDetail = ({ data }: { data: { products: IProduct[] } }) => {
         showBorders={true}
         columnAutoWidth={true}
         rowAlternationEnabled={true}
+        onCellClick={handleCellClick}
       >
         <Editing
           mode="row"
@@ -157,7 +171,38 @@ const OrderDetail = ({ data }: { data: { products: IProduct[] } }) => {
         />
         <Column dataField="productId" caption="Ürün Id" />
         <Column dataField="quantity" caption="Adet" />
+        <Column
+          dataField="avatar"
+          caption="Avatar"
+          cellRender={(cell) => (
+            <Image
+              src={"/next.svg"}
+              alt="avatar"
+              className="w-8 h-8 rounded-full cursor-pointer"
+              width={100}
+              height={100}
+            />
+          )}
+        />
       </DataGrid>
+      <Popup
+        visible={popupVisible}
+        onHiding={() => setPopupVisible(false)}
+        dragEnabled={true}
+        closeOnOutsideClick={true}
+        showTitle={true}
+        title={String(selectedOrder?.productId) || ""}
+        width={400}
+        height={400}
+      >
+        <Image
+          src={"/next.svg"}
+          alt={String(selectedOrder?.productId)}
+          className="w-full h-full object-contain"
+          width={300}
+          height={300}
+        />
+      </Popup>
     </div>
   );
 };
